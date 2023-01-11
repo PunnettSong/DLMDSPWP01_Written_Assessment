@@ -1,15 +1,22 @@
-
-"""_summary_
-    Adding For Loop & While Loop Example
 """
-def main():
-    ebooks = ["python", "perl", "ruby"]
-    for item in ebooks:
-        if item == "perl":
-            print(item)
-            break
-        else:
-            print(item)
-            break
-if __name__ == "__main__":
-    main()
+DLMDSPWP01_Written Assessment
+
+Given: 
+    (A) 4 training datasets
+    (B) One test dataset
+    (C) Datasets for 50 ideals
+    
+    X     Y
+    X1    Y1
+    .     .
+    .     .
+    Xn    Yn
+    
+
+"""
+
+import pandas as pd
+
+df = pd.read_csv('Training_01.xlsx')
+
+print(df) 
