@@ -178,15 +178,19 @@ def Train_Data():
     global removed_y_ideal
     
     #Pass the variables into the Least Square Function (to fund the slope and y-intercept)
-    for i in range(0, 4):
-        y_col = y_train.iloc[:, i]
-        least_Sq(x_train, y_col, n_train)
+    try:
+        for i in range(0, 4):
+            y_col = y_train.iloc[:, i]
+            least_Sq(x_train, y_col, n_train)
+    except:
+        print("Try Again. Invalid input for calculating the slope and y-intercept for Least Squared")
     
     #Calculate the Pred_Y value (Least-squared)
     for h in range (0, 4):
         for i in range(n_train):
             pred_y(x_train.values[i][0], slope_list_train[h], y_intercept_list_train[h])
             y_pred_list.append(y_pred)
+        
         df_y_pred[h] = y_pred_list
         y_pred_list = []
     frames = [x_train, df_y_pred]
@@ -276,16 +280,19 @@ def Train_Data():
     # 0). Loop through the test data points
     print("From here, we go through each point, save all data points which are no smaller than Sqrt(2)")
     print("""==== Test Dataset ====""")
-    for i in range(n_test):
-        for j in range(1, 4):
-            for h in range(n_ideal):
-                # 1). Take test data point minus the reality data points
-                diff_test_ideal = abs(y_test.values[i][0]) - abs(df_final_ideal.values[h][j])
-                # 2). If it is less than Sqrt(2), save into a list (We will name it: new_y_test)
-                if(diff_test_ideal < math.sqrt(2)):
-                    #3). If the value already exist in the list, we don't have to reappend it again
-                    if y_test.values[i][0] not in new_y_test:
-                        new_y_test.append(y_test.values[i][0])
+    try:
+        for i in range(n_test):
+            for j in range(1, 4):
+                for h in range(n_ideal):
+                    # 1). Take test data point minus the reality data points
+                    diff_test_ideal = abs(y_test.values[i][0]) - abs(df_final_ideal.values[h][j])
+                    # 2). If it is less than Sqrt(2), save into a list (We will name it: new_y_test)
+                    if(diff_test_ideal < math.sqrt(2)):
+                        #3). If the value already exist in the list, we don't have to reappend it again
+                        if y_test.values[i][0] not in new_y_test:
+                            new_y_test.append(y_test.values[i][0])
+    except StopIteration:
+        next()
     # Find the removed rows
     print("Here is the removed data points and its indices")
     print("""==== Removed Data points ====""")
@@ -306,3 +313,10 @@ def Train_Data():
     
 if __name__ == '__main__':
     Train_Data()
+    
+#TODO Object-Oriented Python
+#TODO At least one inheritance
+#TODO It includes standard- und user-defined exception handlings --> Done
+#TODO Make use of the Panda Packages --> Done
+#TODO Write unit-tests for all useful elements
+#TODO Documentation using Docstrings --> Done
