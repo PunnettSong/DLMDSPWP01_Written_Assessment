@@ -95,6 +95,7 @@ new_y_test = []
 df_new_y_test = pd.DataFrame()
 df_intercept = pd.DataFrame()
 removed_y_ideal = []
+y_dev_list = []
 
 #Function for calculating the slope and y-intercept
 def least_Sq(x, y, n):
@@ -172,6 +173,7 @@ def Train_Data():
     global y_pred_test
     global df_y_pred_test
     global diff_test_ideal
+    global y_dev_list
     global new_y_test
     global df_new_y_test
     global df_intercept
@@ -255,14 +257,14 @@ def Train_Data():
     #Combine with x_value and rename the column name
     frame_ideal = [x_train, df_final_ideal]
 
-    print(df_final_ideal)
+    
     plt.plot(x_train, df_final_ideal)
     plt.legend(['y34', 'y31', 'y8', 'y46'])
     plt.scatter(x_test, y_test)
     #plt.show()
     df_final_ideal = pd.concat(frame_ideal, axis = 1)
     df_final_ideal.rename(columns = {0:'y34', 1:'y31', 2:'y8', 3:'y46'}, inplace = True)
-   
+    print(df_final_ideal)
 
     #Examine with test dataset
     """
@@ -291,6 +293,8 @@ def Train_Data():
                         #3). If the value already exist in the list, we don't have to reappend it again
                         if y_test.values[i][0] not in new_y_test:
                             new_y_test.append(y_test.values[i][0])
+                            #Save the y-deivation into a list
+                            y_dev_list.append(diff_test_ideal)
     except StopIteration:
         next()
     # Find the removed rows
@@ -299,6 +303,10 @@ def Train_Data():
     df_new_y_test['y'] = new_y_test
     removed_df = pd.concat([y_test,df_new_y_test]).drop_duplicates(keep=False)   
     print(removed_df)
+    
+    print("In addition, a list of all y-deivation values are saved as well")
+    print(y_dev_list)
+    print()
     
     print("Therefore, we drop those data points to match the indices with the x values, so the Test Dataset will be: ")
     print("""==== Test Dataset (with Initial indices) ====""")
@@ -320,3 +328,5 @@ if __name__ == '__main__':
 #TODO Make use of the Panda Packages --> Done
 #TODO Write unit-tests for all useful elements
 #TODO Documentation using Docstrings --> Done
+
+#TODO Save the deviation that is less than sqrt(2)
