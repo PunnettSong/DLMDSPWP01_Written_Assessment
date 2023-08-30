@@ -26,6 +26,7 @@ class print_disclaimer:
         print()
         print("From the indexes mapping, here are the 4 ideal functions")
         print(self.df_final_ideal)
+        print("Saved to Database!")
     def print_test_data(self, df_query_test):
         self.df_query_test = df_query_test
         print("==== Test Dataset ====")
@@ -36,6 +37,7 @@ class print_disclaimer:
         print("From here, we go through each point, save all data points which are no smaller than Sqrt(2)")
         print("""==== New Test Dataset ====""")
         print(self.df_new_y_test)
+        print("Saved to Database!")
     def print_removed(self, removed_df):
         self.removed_df = removed_df
         print("Here is the removed data points and its indices")

@@ -245,11 +245,17 @@ def Train_Data():
         index = final_index[i]
         df_final_ideal[i] = y_ideal.iloc[:, index:index + 1]
         
+    
+        
     #Combine with x_value and rename the column name
     frame_ideal = [x_train, df_final_ideal]
     df_final_ideal = pd.concat(frame_ideal, axis = 1)
     df_final_ideal.rename(columns = {0:'y34', 1:'y31', 2:'y8', 3:'y46'}, inplace = True)
+    engine = create_engine('sqlite:///chosen_data.db')
+    connection_chosen = engine.connect()
+    df_final_ideal.to_sql('chosen ideal functions', connection_chosen, if_exists='replace')
     disclaimer.print_ideal(df_final_ideal)
+    
 
     #Examine with test dataset
     """
@@ -286,8 +292,10 @@ def Train_Data():
     disclaimer.print_removed(removed_df)  
     disclaimer.print_y_dev(y_dev_list)
     
-    
+    engine = create_engine('sqlite:///new_test_data.db')
+    connection_test = engine.connect()
     df_new_y_test = df_query_test.drop(labels=None, axis=0, index=[75, 83, 97])
+    df_new_y_test.to_sql('new_y_test', connection_test, if_exists='replace')
     disclaimer.print_new_y(df_new_y_test)
     
     # 4). Scatter plot the new_test data with the 4 ideal function
@@ -298,6 +306,7 @@ def Train_Data():
     plt.show()
     
     disclaimer.print_conclusion()
+    
     
 if __name__ == '__main__':
     Train_Data()
