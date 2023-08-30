@@ -27,9 +27,12 @@ from matplotlib import pyplot as plt
 from sqlalchemy import create_engine, text
 
 from print_disclaimer import print_disclaimer
+from test import ZeroUnitTest
 from draw import Draw as dw
 from draw import Scatter
 from draw import Line
+
+
 
 #Working with database
 df_train_file = pd.read_csv('train.csv')
@@ -128,6 +131,7 @@ def pred_y(x, m, b):
 def Train_Data():
     # Declare constructor
     disclaimer = print_disclaimer()
+    testZero = ZeroUnitTest()
     global y_pred
     global y_pred_list
     global sum_y_pred
@@ -144,7 +148,6 @@ def Train_Data():
     except:
         disclaimer.print_exception()
         
-    
     #Calculate the Pred_Y value (Least-squared)
     for h in range (0, 4):
         for i in range(n_train):
@@ -158,9 +161,12 @@ def Train_Data():
     disclaimer.print_predicted(pred_xy)
     
     #Find the total of all y_value in predict data
+    
     for h in range(1, 5):
+        testZero.test_Zero(sum_y_pred, "Pass")
         for i in range (n_train):
             sum_y_pred += pred_xy.values[i][h]
+            testZero.test_NotZero(sum_y_pred, "Pass")
         sum_y_pred_list.append(sum_y_pred)
         sum_y_pred = 0
     disclaimer.print_predicted_sum(sum_y_pred_list)
@@ -174,7 +180,7 @@ def Train_Data():
         sum_y_ideal_list.append(sum_y_ideal)
         sum_y_ideal = 0
     disclaimer.print_ideal_sum(sum_y_ideal_list)
-     
+    
     # Map the pred-value to find 4 suitable y_value in the ideal dataset
     #Methodology: For each pred_value, find the minimum sum difference of least-squared and append into a list
     least_dif = abs(sum_y_pred_list[0])  - abs(sum_y_ideal_list[0])
@@ -199,8 +205,6 @@ def Train_Data():
     for i in range(0, 4):
         index = final_index[i]
         df_final_ideal[i] = y_ideal.iloc[:, index:index + 1]
-        
-    
         
     #Combine with x_value and rename the column name
     frame_ideal = [x_train, df_final_ideal]
@@ -265,11 +269,3 @@ def Train_Data():
     
 if __name__ == '__main__':
     Train_Data()
-    
-#TODO Object-Oriented Python --> Done
-#TODO At least one inheritance --> Done
-#TODO It includes standard- und user-defined exception handlings --> Done
-#TODO Make use of the Panda Packages --> Done
-#TODO Write unit-tests for all useful elements
-#TODO Documentation using Docstrings --> Done
-#TODO Save the deviation that is less than sqrt(2)
