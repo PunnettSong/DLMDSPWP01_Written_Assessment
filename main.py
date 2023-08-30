@@ -296,8 +296,8 @@ def Train_Data():
     plt.scatter(x_test, y_test)
     plt.scatter(df_new_y_test['x'], df_new_y_test['y'])
     plt.show()
-    print("Based on observation from the popped graph, we can conclude that the test data does fits to one or two of the ideal functions picked.")
-    print("The functions that the data points touches are y8 and y34")
+    
+    disclaimer.print_conclusion()
     
 if __name__ == '__main__':
     Train_Data()
@@ -308,5 +308,4 @@ if __name__ == '__main__':
 #TODO Make use of the Panda Packages --> Done
 #TODO Write unit-tests for all useful elements
 #TODO Documentation using Docstrings --> Done
-
 #TODO Save the deviation that is less than sqrt(2)
