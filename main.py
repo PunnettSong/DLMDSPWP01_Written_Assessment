@@ -68,33 +68,26 @@ x_test = df_query_test.iloc[:,1:2]
 y_test = df_query_test.iloc[:,2:]
 n_test = df_query_test.shape[0]
 
-#Prep variable to save the slope, y-intercept, y-deviation squared
+#Prep variable to save some data
 
 slope_list_train = []
 y_intercept_list_train = []
-ysd_list = []
 y_pred = 0
 y_pred_list = []
 df_y_pred = pd.DataFrame()
-df_y_test = pd.DataFrame()
 sum_y_pred_list = []
 sum_y_pred = 0
 sum_y_ideal_list = []
 sum_y_ideal = 0
-final_ideal = 0
-final_index = []
-final_ideal_list = []
 least_dif = 0
 dif = 0
 count = 0
+final_index = []
+final_ideal = 0
 df_final_ideal = pd.DataFrame()
-y_pred_test_list = []
-y_pred_test = 0
-df_y_pred_test = pd.DataFrame()
 diff_test_ideal = 0
 new_y_test = []
 df_new_y_test = pd.DataFrame()
-df_intercept = pd.DataFrame()
 removed_y_ideal = []
 y_dev_list = []
 
@@ -126,60 +119,19 @@ def least_Sq(x, y, n):
 #Function for calculating least square (y_pred) for each x_train
 def pred_y(x, m, b):
     global y_pred
-    global y_pred_list
     
     y_pred = m*x + b
-    
-def ysd(y, n):
-    global ysd_list
-    # Find the mean of y
-    y_mean = sum(y) / n
-    
-    #Subtract each value with mean
-    y_sub = y - y_mean
-    
-    #Squared the new value
-    y_sq = y_sub * y_sub
-    
-    #Sum the squared
-    
-    ysd = sum(y_sq)
-    
-    ysd_list.append(ysd)
     
 def Train_Data():
     # Declare constructor
     disclaimer = print_disclaimer()
-    # Declare global variable
-    global df_ideal_file
-    global x_ideal
-    global n_ideal
-    global df_train_file
-    global n_train
-    global n_test
-    global slope_list_train
-    global y_intercept_list_train
+    global y_pred
     global y_pred_list
     global sum_y_pred
-    global sum_y_pred_list
     global sum_y_ideal
-    global sum_y_ideal_list
-    global dif
-    global least_dif
-    global final_ideal
-    global final_index
-    global final_ideal_list
     global count
     global df_final_ideal
-    global y_pred_test_list
-    global y_pred_test
-    global df_y_pred_test
-    global diff_test_ideal
-    global y_dev_list
-    global new_y_test
     global df_new_y_test
-    global df_intercept
-    global removed_y_ideal
     
     #Pass the variables into the Least Square Function (to fund the slope and y-intercept)
     try:
@@ -312,7 +264,7 @@ if __name__ == '__main__':
     Train_Data()
     
 #TODO Object-Oriented Python --> Done
-#TODO At least one inheritance 
+#TODO At least one inheritance
 #TODO It includes standard- und user-defined exception handlings --> Done
 #TODO Make use of the Panda Packages --> Done
 #TODO Write unit-tests for all useful elements
