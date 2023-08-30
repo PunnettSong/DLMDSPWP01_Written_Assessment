@@ -27,6 +27,9 @@ from matplotlib import pyplot as plt
 from sqlalchemy import create_engine, text
 
 from print_disclaimer import print_disclaimer
+from draw import Draw as dw
+from draw import Scatter
+from draw import Line
 
 #Working with database
 df_train_file = pd.read_csv('train.csv')
@@ -251,20 +254,20 @@ def Train_Data():
     disclaimer.print_new_y(df_new_y_test)
     
     # 4). Scatter plot the new_test data with the 4 ideal function
-    plt.plot(x_train, df_final_ideal)
-    plt.legend(['y34', 'y31', 'y8', 'y46'])
-    plt.scatter(x_test, y_test)
-    plt.scatter(df_new_y_test['x'], df_new_y_test['y'])
-    plt.show()
+    draw = dw(x_test, y_test, plt)
+    scatter_plot = Scatter(x_test, y_test, plt)
+    scatter_plot.draw_scatter()
+    line_plot = Line(x_train, df_final_ideal, plt)
+    line_plot.draw_line()
+    draw.show()
     
     disclaimer.print_conclusion()
-    
     
 if __name__ == '__main__':
     Train_Data()
     
 #TODO Object-Oriented Python --> Done
-#TODO At least one inheritance
+#TODO At least one inheritance --> Done
 #TODO It includes standard- und user-defined exception handlings --> Done
 #TODO Make use of the Panda Packages --> Done
 #TODO Write unit-tests for all useful elements
