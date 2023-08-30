@@ -1,5 +1,4 @@
 """
-
 DLMDSPWP01_Written Assessment
 
 Given: 
@@ -26,6 +25,8 @@ import numpy as np
 import math as math
 from matplotlib import pyplot as plt
 from sqlalchemy import create_engine, text
+
+from print_disclaimer import print_disclaimer
 
 #Working with database
 df_train_file = pd.read_csv('train.csv')
@@ -147,7 +148,8 @@ def ysd(y, n):
     ysd_list.append(ysd)
     
 def Train_Data():
-    
+    # Declare constructor
+    disclaimer = print_disclaimer()
     # Declare global variable
     global df_ideal_file
     global x_ideal
@@ -185,44 +187,38 @@ def Train_Data():
             y_col = y_train.iloc[:, i]
             least_Sq(x_train, y_col, n_train)
     except:
-        print("Try Again. Invalid input for calculating the slope and y-intercept for Least Squared")
+        disclaimer.print_exception()
+        
     
     #Calculate the Pred_Y value (Least-squared)
     for h in range (0, 4):
         for i in range(n_train):
             pred_y(x_train.values[i][0], slope_list_train[h], y_intercept_list_train[h])
             y_pred_list.append(y_pred)
-        
         df_y_pred[h] = y_pred_list
         y_pred_list = []
     frames = [x_train, df_y_pred]
     pred_xy = pd.concat(frames, axis = 1)
     pred_xy.rename(columns = {0:'y1', 1:'y2', 2:'y3', 3:'y4'}, inplace = True)
-    print()
-    print("""====  x & y_value (Predicted using Least Squared) ====""")
-    print(pred_xy)
+    disclaimer.print_predicted(pred_xy)
     
     #Find the total of all y_value in predict data
-    print("***Since the mapping is based on the minimum sum of least_squared, we can map y-pred to y-ideal value.***") 
-    print("""==== Each sum of y_value (Predict) ====""")
     for h in range(1, 5):
         for i in range (n_train):
             sum_y_pred += pred_xy.values[i][h]
         sum_y_pred_list.append(sum_y_pred)
         sum_y_pred = 0
-    print(sum_y_pred_list)
+    disclaimer.print_predicted_sum(sum_y_pred_list)
+    
     
     #Find the total of all y_value in ideal data
-    print()
-    print("""==== Each sum of y_value (Ideal) ====""")
     for h in range(0, 50):
         y_col = y_ideal.iloc[:, h]
         for i in range(n_ideal):
             sum_y_ideal += y_col.values[i]
         sum_y_ideal_list.append(sum_y_ideal)
         sum_y_ideal = 0
-        
-    print(sum_y_ideal_list)
+    disclaimer.print_ideal_sum(sum_y_ideal_list)
      
     # Map the pred-value to find 4 suitable y_value in the ideal dataset
     #Methodology: For each pred_value, find the minimum sum difference of least-squared and append into a list
@@ -241,30 +237,19 @@ def Train_Data():
     
     
     #Print the index in ideal dataset which are the 4 ideal function
-    print()
-    print("As result, we will derive to these 4 indices which has the minimum least_squared")
-    print("Note: Index starts from 0 while ideal y-value starts from y1")
-    print(final_index)
-    print()
+    disclaimer.print_index(final_index)
     
     # Print the 4 ideal function found
-    print()
-    print("From the indexes mapping, here are the 4 ideal functions")
+    
     for i in range(0, 4):
         index = final_index[i]
         df_final_ideal[i] = y_ideal.iloc[:, index:index + 1]
         
     #Combine with x_value and rename the column name
     frame_ideal = [x_train, df_final_ideal]
-
-    
-    plt.plot(x_train, df_final_ideal)
-    plt.legend(['y34', 'y31', 'y8', 'y46'])
-    plt.scatter(x_test, y_test)
-    #plt.show()
     df_final_ideal = pd.concat(frame_ideal, axis = 1)
     df_final_ideal.rename(columns = {0:'y34', 1:'y31', 2:'y8', 3:'y46'}, inplace = True)
-    print(df_final_ideal)
+    disclaimer.print_ideal(df_final_ideal)
 
     #Examine with test dataset
     """
@@ -276,12 +261,8 @@ def Train_Data():
         For each ideal function, loop through 4 times)
         - Save all the test dataset
     """
-    print("""==== Test Dataset ====""")
-    print(df_query_test)
-    print()
+    disclaimer.print_test_data(df_query_test)
     # 0). Loop through the test data points
-    print("From here, we go through each point, save all data points which are no smaller than Sqrt(2)")
-    print("""==== Test Dataset ====""")
     try:
         for i in range(n_test):
             for j in range(1, 4):
@@ -297,33 +278,32 @@ def Train_Data():
                             y_dev_list.append(diff_test_ideal)
     except StopIteration:
         next()
-    # Find the removed rows
-    print("Here is the removed data points and its indices")
-    print("""==== Removed Data points ====""")
     df_new_y_test['y'] = new_y_test
-    removed_df = pd.concat([y_test,df_new_y_test]).drop_duplicates(keep=False)   
-    print(removed_df)
+    disclaimer.print_new_y_test(df_new_y_test)
     
-    print("In addition, a list of all y-deivation values are saved as well")
-    print(y_dev_list)
-    print()
+    # Find the removed rows
+    removed_df = pd.concat([y_test,df_new_y_test]).drop_duplicates(keep=False)
+    disclaimer.print_removed(removed_df)  
+    disclaimer.print_y_dev(y_dev_list)
     
-    print("Therefore, we drop those data points to match the indices with the x values, so the Test Dataset will be: ")
-    print("""==== Test Dataset (with Initial indices) ====""")
+    
     df_new_y_test = df_query_test.drop(labels=None, axis=0, index=[75, 83, 97])
-    print(df_new_y_test)
-    print("Based on observation from the popped graph, we can conclude that the test data does fits to one or two of the ideal functions picked.")
-    print("The functions that the data points touches are y8 and y34")
+    disclaimer.print_new_y(df_new_y_test)
+    
     # 4). Scatter plot the new_test data with the 4 ideal function
+    plt.plot(x_train, df_final_ideal)
+    plt.legend(['y34', 'y31', 'y8', 'y46'])
+    plt.scatter(x_test, y_test)
     plt.scatter(df_new_y_test['x'], df_new_y_test['y'])
     plt.show()
-    
+    print("Based on observation from the popped graph, we can conclude that the test data does fits to one or two of the ideal functions picked.")
+    print("The functions that the data points touches are y8 and y34")
     
 if __name__ == '__main__':
     Train_Data()
     
-#TODO Object-Oriented Python
-#TODO At least one inheritance
+#TODO Object-Oriented Python --> Done
+#TODO At least one inheritance 
 #TODO It includes standard- und user-defined exception handlings --> Done
 #TODO Make use of the Panda Packages --> Done
 #TODO Write unit-tests for all useful elements
